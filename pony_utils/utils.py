@@ -43,10 +43,14 @@ def create_package(project, name=None, server=PB_SERVER, auth=None):
     create_url = "%s/%s" % (server, slugify(unicode(project)))
     json_payload = '{"name": "%s"}' % name
     h = httplib2.Http()
-    resp, content = h.request(create_url, "PUT", body=json_payload,
-        headers={'content-type':'application/json',
+    if auth:
+        _headers = {'content-type':'application/json',
                  'AUTHORIZATION': auth}
-            )
+    else:
+        _headers = {'content-type':'application/json'}
+    resp, content = h.request(create_url, "PUT", body=json_payload,
+                              headers=_headers,
+                            )
 
 def send_results(project, result_dict, server=PB_SERVER, auth=None):
     post_url = "%s/%s/builds" % (server, slugify(unicode(project)))
